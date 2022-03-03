@@ -1,1 +1,14 @@
-# aws_landing_zone
+Le déploiement  que je vais créer dans ce projet comprendra  les services suivants. Cela fournira la base du service que j'ajouterai plus tard dans cette série de blogs. 
+
+- One Virtual Private Cloud (VPC) – Un VPC est requis. Il vous permet de lancer des ressources AWS dans un réseau virtuel que vous avez défini. Ce réseau virtuel ressemble étroitement à un réseau traditionnel que vous exploiteriez dans votre propre centre de données. 
+
+- Two public subnets  - Ces sous-réseaux seront utilisés pour déployer toute ressource accessible depuis Internet, telle que notre hôte bastion et les équilibreurs de charge d'application. Ces sous-réseaux  fourniront également un accès Internet externe  pour nos ressources privées via la passerelle NAT, que nous allons déployer ici. Les deux sous-réseaux seront affectés à deux zones de disponibilité distinctes, afin que nous puissions déployer des ressources sur chacun d'eux, assurant une haute disponibilité. Notez que les zones de disponibilité  ( AZ  )  sont physiquement isolées les unes des autres. 
+
+- Two private application subnets – Ces deux sous-réseaux , chacun affecté à des zones de disponibilité uniques,  hébergeront nos serveurs d'applications. Les serveurs d'un sous-réseau privé (non relié à une passerelle Internet) ne seront pas directement accessibles depuis Internet et sont donc à l'abri des attaques externes. L'accès à ces serveurs ne sera disponible que via une adresse IP virtuelle d'équilibreur de charge.
+
+- Two private database subnets  – Ces deux sous-réseaux , chacun affecté à des zones de disponibilité uniques,  hébergeront nos instances de base de données. Les bases de données d'un sous-réseau privé (non connecté à une passerelle Internet) ne seront pas directement accessibles depuis Internet et sont donc à l'abri des attaques externes. L'accès à la base de données sera très sécurisé, restreint via les groupes de sécurité AWS pour autoriser uniquement le serveur GitLab à y accéder.  
+
+- Internet Gateway (IG) – La passerelle Internet  permet notre accès Internet bidirectionnel vers et depuis les services au sein de notre VPC. Notez que seules les ressources de nos sous-réseaux « publics » auront accès à une passerelle Internet.   
+- NAT Gateway (NAT) – La passerelle de traduction d' adresses réseau (NAT) permet aux  services  de  nos sous- réseaux  privés  de se connecter à Internet ou à d'autres services AWS, mais empêche Internet d'établir une connexion avec ces instances . Ceci est nécessaire pour les installations de packages et de correctifs sur nos instances EC2 privées.  
+
+- Route Tables – Ces  tables  sont un ensemble de règles ou de  routes  qui régissent l'endroit où le trafic est acheminé. Nous attachons une table de routage à chaque sous-réseau. Nos sous-réseaux publics auront une route vers la passerelle Internet et nos sous-réseaux privés auront une route vers la passerelle NAT.
