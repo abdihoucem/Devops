@@ -128,11 +128,66 @@ resource "aws_autoscaling_group" "jenkins-master" {
   min_size                  = "${var.asg_jenkins_master_min}"
   desired_capacity          = "${var.asg_jenkins_master_desired}"
   launch_configuration      = "${aws_launch_configuration.jenkins-master.name}"
-  vpc_zone_identifier       = ["${aws_subnet.private-subnet.id}","${aws_subnet.private-subnet.id}"]
-  target_group_arns = aws_lb_tar
+  vpc_zone_identifier       = ["${aws_subnet.private-subnet.id}","${aws_subnet.private-subnet2.id}"]
+  target_group_arns = ["${aws_lb_target_group.jenkins-master-8080.id}"]
+  lifecycle {
+    create_before_destroy = true
+  }
   tag {
-    key                 = "foo"
-    value               = "bar"
+    key                 = "Name"
+    value               = "jenkins-master"
     propagate_at_launch = true
   }
+  depends_on = [
+    "aws_efs_mount_target.jenkins-master-priv1",
+    "aws_efs_mount_target.jenkins-master-priv2"
+  ]
+}
+
+resource "aws_autoscaling_group" "jenkins-slave" {
+  name                      = "jenkins-slave"
+  max_size                  = "${var.asg_jenkins_slave_max}"
+  min_size                  = "${var.asg_jenkins_slave_min}"
+  desired_capacity          = "${var.asg_jenkins_slave_desired}"
+  launch_configuration      = "${aws_launch_configuration.jenkins-slave.name}"
+  vpc_zone_identifier       = ["${aws_subnet.private-subnet.id}","${aws_subnet.private-subnet2.id}"]
+  lifecycle {
+    create_before_destroy = true
+  }
+  tag {
+    key                 = "Name"
+    value               = "jenkins-slave"
+    propagate_at_launch = true
+  }
+}
+
+resource "aws_autoscaling_group" "git" {
+  name                      = "git"
+  max_size                  = "${var.asg_git_max}"
+  min_size                  = "${var.asg_git_min}"
+  desired_capacity          = "${var.asg_git_desired}"
+  launch_configuration      = "${aws_launch_configuration.git.name}"
+  vpc_zone_identifier       = ["${aws_subnet.private-subnet.id}","${aws_subnet.private-subnet2.id}"]
+  target_group_arns = ["${aws_lb_target_group.git-80.id}"]
+  lifecycle {
+    create_before_destroy = true
+  }
+  tag {
+    key                 = "Name"
+    value               = "gitlab"
+    propagate_at_launch = true
+  }
+  depends_on = [
+    "aws_db_instance.gitlab_postgres",
+    "aws_efs_mount_target.git-ssh-priv1",
+    "aws_efs_mount_target.git-ssh-priv2",
+    "aws_efs_mount_target.git-rails-uploads-priv1",
+    "aws_efs_mount_target.git-rails-uploads-priv2",
+    "aws_efs_mount_target.git-rails-shared-priv1",
+    "aws_efs_mount_target.git-rails-shared-priv2",
+    "aws_efs_mount_target.git-builds-priv1",
+    "aws_efs_mount_target.git-builds-priv2",
+    "aws_efs_mount_target.git-data-priv1",
+    "aws_efs_mount_target.git-data-priv2"
+  ]
 }
