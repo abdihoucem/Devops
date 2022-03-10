@@ -1,4 +1,4 @@
-ressource "aws_security_group" "efs-general" {
+resource "aws_security_group" "efs-general" {
     name = "sg_efs_general"
     description ="Allow incomming NFS ports"
     ingress {
@@ -25,7 +25,7 @@ ressource "aws_security_group" "efs-general" {
     }
 }
 
-ressource "aws_security_group" "sg-bastion" {
+resource "aws_security_group" "sg-bastion" {
     name = "sg_bastion"
     description ="Allow incomming SSH access and ping"
     ingress {
@@ -52,7 +52,7 @@ ressource "aws_security_group" "sg-bastion" {
     }
 }
 
-ressource "aws_security_group" "sg-jenkins" {
+resource "aws_security_group" "sg-jenkins" {
     name = "sg_jenkins"
     description ="Allow traffic from public subnet"
     ingress {
@@ -85,7 +85,7 @@ ressource "aws_security_group" "sg-jenkins" {
     }
 }
 
-ressource "aws_security_group" "sg-db" {
+resource "aws_security_group" "sg-db" {
     name = "sg_db"
     description ="Allow traffic from public subnet"
     ingress {
@@ -112,7 +112,7 @@ ressource "aws_security_group" "sg-db" {
     }
 }
 
-ressource "aws_security_group" "sg-redis" {
+resource "aws_security_group" "sg-redis" {
     name = "sg_redis"
     description ="Allow traffic from private subnet"
     ingress {
@@ -139,7 +139,7 @@ ressource "aws_security_group" "sg-redis" {
     }
 }
 
-ressource "aws_security_group" "sg-git" {
+resource "aws_security_group" "sg-git" {
     name = "sg_git"
     description ="Allow traffic from public subnet"
     ingress {
