@@ -4,18 +4,6 @@ curl "http://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
 unzip awscli-bundle.zip
 sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
 
-#Mount EFS FileSystem
-JENKINS_DIR="/jenkins"
-mkdir -p $JENKINS_DIR
-EFS_FSID='/usr/local/bin/aws --region us-east-2 --output text efs describe-file-systems | grep jenkins | awk '{print $5}''
-AZ='curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone'
-REGION='curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone | sed 's/\(.*\)[a-z]/\1/''
-EFS_PATH="$AZ.$EFS_FSID.efs.$REGION.amazonaws.com"
-cat >> /etc/fstab << EOF
-$EFS_PATH:/$JENKINS_DIR nfs
-nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport,_netdv 0 0
-EOF
-mount  $JENKINS_DIR
 
 
 yum remove -y java
