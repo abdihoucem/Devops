@@ -39,7 +39,7 @@ output "GitLab_One-Time_DB_Creation_Command-Primary_Only_2" {
       value = "sudo gitlab-ctl reconfigure"
   }
 
-  output "Bastion Public IP" {
+  output "Bastion_Public_IP" {
       value = "${aws_instance.bastion.public_ip}"
   }
 
