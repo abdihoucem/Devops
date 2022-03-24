@@ -43,7 +43,7 @@ output "GitLab_One-Time_DB_Creation_Command-Primary_Only_2" {
       value = "${aws_instance.bastion.public_ip}"
   }
 
-output "Devops Apps Public IP (ELB)" {
+output "Devops_Apps_Public_IP" {
       value = "${aws_lb.alb_apps.dns_name}"
   }
 
